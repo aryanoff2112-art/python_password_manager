@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+
+# Password Manager Data
+passwords.json
+salt.key
+verify.key
+
+# Virtual Environment
+venv/
+.env
+
+# IDE Files
+.vscode/
+.idea/
