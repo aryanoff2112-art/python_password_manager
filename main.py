@@ -251,7 +251,7 @@ def delete():
     save_passwords(new_list)
 
     if deleted:
-        logging.info("Deleted entry for website '%s'.", re.match["website"])
+        logging.info("Deleted entry for website '%s'.", website)
         print(SUCCESS + "\nPassword deleted.\n" + RESET)
     else:
         print(ERROR + "\nWebsite not found.\n" + RESET)
