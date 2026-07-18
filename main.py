@@ -6,6 +6,8 @@ from cryptography.hazmat.primitives import hashes
 import re
 import json
 import logging
+import random
+import string
 from datetime import datetime
 import time
 
@@ -148,13 +150,18 @@ def add():
         if validate_username(username):
             break
 
-    while True:
-        password = input(INFO + "Password: " + RESET).strip()
+    if input(INFO + "Generate a strong password for you? (yes/no): " + RESET).strip().lower() == "yes":
+        password = prompt_generate_password()
+    else:
+        while True:
+            password = input(INFO + "Password: " + RESET).strip()
 
-        if password:
-            break
+            if password:
+                break
 
-        print(ERROR + "Password cannot be empty." + RESET)
+            print(ERROR + "Password cannot be empty." + RESET)
+
+        check_password_strength(password)
 
 
 
@@ -239,11 +246,13 @@ def delete():
     new_list = []
 
     deleted = False
+    deleted_website = None
 
     for account in passwords:
 
         if account["website"].lower() == website:
             deleted = True
+            deleted_website = account["website"]
             continue
 
         new_list.append(account)
@@ -251,7 +260,7 @@ def delete():
     save_passwords(new_list)
 
     if deleted:
-        logging.info("Deleted entry for website '%s'.", website)
+        logging.info("Deleted entry for website '%s'.", deleted_website)
         print(SUCCESS + "\nPassword deleted.\n" + RESET)
     else:
         print(ERROR + "\nWebsite not found.\n" + RESET)
@@ -323,6 +332,111 @@ def validate_username(username):
 
     return False        
 
+
+def generate_password(min_length, max_length, use_uppercase=True, use_digits=True, use_special_chars=True):
+    """Generate a random password of a length between min_length and max_length
+    (inclusive) that is guaranteed to contain at least one character from
+    every requested category."""
+
+    digits = string.digits
+    special_chars = string.punctuation
+
+    characters = string.ascii_lowercase
+    if use_uppercase:
+        characters += string.ascii_uppercase
+    if use_digits:
+        characters += digits
+    if use_special_chars:
+        characters += special_chars
+
+    target_length = random.randint(min_length, max_length)
+
+    # Guarantee at least one character from each requested category.
+    required_chars = [random.choice(string.ascii_lowercase)]
+    if use_uppercase:
+        required_chars.append(random.choice(string.ascii_uppercase))
+    if use_digits:
+        required_chars.append(random.choice(digits))
+    if use_special_chars:
+        required_chars.append(random.choice(special_chars))
+
+    # If more categories are required than the target length allows, grow it.
+    if len(required_chars) > target_length:
+        target_length = len(required_chars)
+
+    remaining = target_length - len(required_chars)
+    password_chars = required_chars + [random.choice(characters) for _ in range(remaining)]
+    random.shuffle(password_chars)
+
+    return "".join(password_chars)
+
+
+def check_password_strength(password):
+    score = 0
+
+    if len(password) >= 8:
+        score += 1
+    if len(password) >= 12:
+        score += 1
+    if any(ch.islower() for ch in password):
+        score += 1
+    if any(ch.isupper() for ch in password):
+        score += 1
+    if any(ch.isdigit() for ch in password):
+        score += 1
+    if any(ch in string.punctuation for ch in password):
+        score += 1
+
+    if score <= 2:
+        label, color = "Weak", ERROR
+    elif score in (3, 4):
+        label, color = "Medium", WARNING
+    else:
+        label, color = "Strong", SUCCESS
+
+    print(color + f"Password Strength: {label}" + RESET)
+    return label
+
+
+def prompt_generate_password():
+    """Interactively ask for generator options, show a candidate password
+    and its strength, and let the user accept it or regenerate."""
+
+    while True:
+        try:
+            min_length = int(input(INFO + "Minimum length: " + RESET))
+            max_length = int(input(INFO + "Maximum length: " + RESET))
+        except ValueError:
+            print(ERROR + "Please enter valid whole numbers.\n" + RESET)
+            continue
+
+        if min_length < 4:
+            print(ERROR + "Minimum length should be at least 4.\n" + RESET)
+            continue
+        if max_length < min_length:
+            print(ERROR + "Maximum length must be greater than or equal to minimum length.\n" + RESET)
+            continue
+
+        use_upper = input("Include uppercase letters? (yes/no): ").strip().lower() == "yes"
+        use_digits_ = input("Include numbers? (yes/no): ").strip().lower() == "yes"
+        use_special = input("Include special characters? (yes/no): ").strip().lower() == "yes"
+
+        password = generate_password(min_length, max_length, use_upper, use_digits_, use_special)
+
+        print(SUCCESS + f"\nGenerated Password: {password}" + RESET)
+        check_password_strength(password)
+
+        if input("\nUse this password? (yes/no): ").strip().lower() == "yes":
+            return password
+
+        print(INFO + "Generating a new one...\n" + RESET)
+
+
+def generate_password_tool():
+    print(TITLE + "\n--- Password Generator ---" + RESET)
+    prompt_generate_password()
+
+
 last_activity = time.time()
 
 while True:
@@ -365,6 +479,7 @@ while True:
     print(INFO + "3." + RESET + " Search by Website")
     print(INFO + "4." + RESET + " Edit Password")
     print(INFO + "5." + RESET + " Delete Password")
+    print(INFO + "6." + RESET + " Generate Password")
     print(ERROR + "Q." + RESET + " Quit")
 
     print(TITLE + "=" * 50 + RESET)
@@ -389,6 +504,10 @@ while True:
 
     elif choice == "5":
         delete()
+        last_activity = time.time()
+
+    elif choice == "6":
+        generate_password_tool()
         last_activity = time.time()
 
     elif choice == "q":

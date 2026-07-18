@@ -1,16 +1,42 @@
-# Python
+# -----------------------------
+# Python cache
+# -----------------------------
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
 
-# Password Manager Data
+# -----------------------------
+# Virtual environments
+# -----------------------------
+venv/
+env/
+.venv/
+
+# -----------------------------
+# Password Manager data
+# -----------------------------
 passwords.json
 salt.key
 verify.key
+password_manager.log
 
-# Virtual Environment
-venv/
+# -----------------------------
+# Environment variables
+# -----------------------------
 .env
 
-# IDE Files
+# -----------------------------
+# VS Code
+# -----------------------------
 .vscode/
+
+# -----------------------------
+# PyCharm
+# -----------------------------
 .idea/
+
+# -----------------------------
+# Operating System files
+# -----------------------------
+.DS_Store
+Thumbs.db

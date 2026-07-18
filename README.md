@@ -1,23 +1,25 @@
-# 🔐 Password Manager (Python)
+# 🔐 Secure Password Manager
 
-A secure terminal-based password manager built with Python.
+A command-line password manager built with Python that securely stores encrypted passwords using Fernet encryption.
 
 ## Features
 
 - Master Password Authentication
-- Password Encryption using Fernet
+- Password Encryption (Fernet)
 - PBKDF2 Key Derivation
-- Store Passwords Securely
-- View Passwords
+- Password Generator
+- Password Strength Checker
+- Store Passwords
 - Search Passwords
 - Edit Passwords
 - Delete Passwords
 - JSON Storage
-- Creation & Last Modified Dates
+- Creation & Last Modified Date
 - Username & Website Validation
-- Colored Terminal Interface
-- Wrong Password Attempt Protection
 - Auto Lock
+- Wrong Password Attempt Limit
+- Colored Terminal Interface
+- Logging
 
 ## Technologies Used
 
@@ -25,25 +27,26 @@ A secure terminal-based password manager built with Python.
 - Cryptography
 - Colorama
 - JSON
+- Logging
 
 ## Installation
 
 ```bash
-pip install cryptography colorama
+pip install -r requirements.txt
 ```
 
 ## Run
 
 ```bash
-python main.py
+python password_manager.py
 ```
 
 ## Security
 
-- Passwords are encrypted using Fernet.
-- Master password is converted into an encryption key using PBKDF2.
-- The master password itself is never stored.
+Passwords are encrypted before storage.
+The master password is never stored directly.
+PBKDF2 with SHA-256 is used for key derivation.
 
-## Screenshots
+## Author
 
-(Add screenshots here later.)
+Aryan

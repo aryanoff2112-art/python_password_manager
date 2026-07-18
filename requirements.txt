@@ -6,5 +6,7 @@ from cryptography.hazmat.primitives import hashes
 import re
 import json
 import logging
+import random
+import string
 from datetime import datetime
 import time
