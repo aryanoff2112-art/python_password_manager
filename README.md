@@ -42,7 +42,7 @@ Passwords are encrypted using AES encryption provided by the Cryptography (Ferne
 Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/password-manager.git
+git clone https:/aryanoff2112-art/github.com//password-manager
 ```
 
 Move inside project
