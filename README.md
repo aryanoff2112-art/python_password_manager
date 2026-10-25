@@ -1,6 +1,6 @@
 # 🔐 Password Manager (Python)
 
-A secure command-line Password Manager built with Python.
+A secure command-line Password Manager built using Python.
 
 Passwords are encrypted using AES encryption provided by the Cryptography (Fernet) library and protected with a Master Password.
 
