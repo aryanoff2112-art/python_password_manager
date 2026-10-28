@@ -76,7 +76,7 @@ Password-Manager
 ├── LICENSE
 ├── .gitignore
 ├── passwords.json
-└── assets
+
 ```
 
 ---
